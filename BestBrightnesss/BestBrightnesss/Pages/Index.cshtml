@@ -1,0 +1,337 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Best Brightness</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-ZoLJ8T+j7VQ+2KMBj35+QnKb+MMvT7mNcGRZRI8CGL1QOcOjx+fuw/58Jk7nuwqE" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        html, body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .header-content {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .header-content img.blury {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                height: 300px;
+                filter: blur(5px);
+                z-index: 1;
+                opacity: 0.6;
+            }
+
+            .header-content h1 {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                z-index: 2;
+                position: relative;
+            }
+
+            .header-content .btn-primary {
+                background-color: #ff0000;
+                border-color: #ff0000;
+                z-index: 2;
+                position: relative;
+            }
+
+            .header-content img.logo {
+                height: 150px;
+                margin-top: 20px;
+                z-index: 2;
+                position: relative;
+            }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            color: #000;
+            text-align: center;
+            align-content: center;
+        }
+
+            .info-section div {
+                flex: 1;
+                padding: 10px;
+                z-index: 100;
+            }
+
+            .info-section i {
+                font-size: 2rem;
+                color: red;
+                margin-bottom: 10px;
+                z-index: 1;
+            }
+
+        .feature-card {
+            background-color: #000;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            color: #fff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .feature-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px #ff0000;
+            }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .features h2 {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 30px;
+                color: #ff0000;
+            }
+
+        .testimonial-section {
+            background-color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+            .testimonial-section h2 {
+                margin-bottom: 30px;
+                color: #ff0000;
+            }
+
+        .testimonial {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+            .testimonial p {
+                font-style: italic;
+            }
+
+        .about-section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+            .about-section .card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .about-section .card-header {
+                background-color: #ff0000;
+                color: #fff;
+                font-size: 1.5rem;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .about-section .card-body {
+                background-color: #fff;
+                color: #000;
+            }
+
+        .social-media {
+            text-align: center;
+            padding: 20px;
+        }
+
+            .social-media a {
+                margin: 0 10px;
+                color: #ff0000;
+                font-size: 2rem;
+            }
+
+        .testimonial-section {
+            background-color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+            .testimonial-section h2 {
+                margin-bottom: 30px;
+                color: #ff0000;
+            }
+
+        .testimonial {
+            border: 1px solid #ddd;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+        }
+
+            .testimonial:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+
+        .testimonial-content {
+            padding: 20px;
+        }
+
+            .testimonial-content p {
+                font-style: italic;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+
+            .testimonial-content strong {
+                display: block;
+                margin-top: 10px;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+
+        .testimonial:hover .testimonial-content p,
+        .testimonial:hover .testimonial-content strong {
+            transform: translateY(-10px);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Content -->
+    <div class="header-content">
+        <img class="blury" src="~/Images/logo1.jpg" alt="Background Logo" />
+        <h1 id="banner">BEST BRIGHTNESS</h1>
+        <a class="btn btn-primary btn-lg" href="/Profile/Register">Sign Up With Us</a>
+        <img class="logo" src="~/Images/logo1.jpg" alt="Company Logo" />
+    </div>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div>
+            <i class="fa fa-map-marker"></i>
+            <h4>Location</h4>
+            <p>123 Bright Street, Lumina City, 12345</p>
+        </div>
+
+        <div>
+            <i class="fa fa-phone"></i>
+            <h4>Call Us</h4>
+            <p>+1 (800) 123-4567</p>
+        </div>
+
+        <div>
+            <i class="fa fa-clock-o"></i>
+            <h4>Schedule</h4>
+            <p>Monday to Friday, 9:00 AM to 6:00 PM</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container py-5">
+        <div class="features">
+            <h2>Features</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <i class="fa fa-leaf fa-3x mb-3"></i>
+                        <h4>Eco-Friendly Solutions</h4>
+                        <p>Offering a range of eco-friendly cleaning products that are safe for your home and the environment.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <i class="fa fa-flask fa-3x mb-3"></i>
+                        <h4>Advanced Formulas</h4>
+                        <p>Our products feature advanced formulas that effectively tackle dirt and grime while being gentle on surfaces.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center">
+                        <i class="fa fa-handshake-o fa-3x mb-3"></i>
+                        <h4>Customer Support</h4>
+                        <p>Providing expert guidance and support to help you choose the right products for your cleaning needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-section">
+        <div class="card">
+            <div class="card-header">
+                About Us
+            </div>
+            <div class="card-body">
+                <p>
+                    Here's an "About Us" paragraph focusing on clean products for Best Brightness:
+
+                    ---
+
+                    At Best Brightness, we are committed to offering eco-friendly and clean lighting solutions. Our products are designed with sustainability in mind, utilizing energy-efficient technologies and environmentally responsible materials. We believe in providing lighting options that not only enhance your space but also contribute to a greener planet. Our dedication to clean products ensures that every item we offer is free from harmful substances, safe for your family, and gentle on the environment. At Best Brightness, we illuminate your world with a clear conscience, knowing that our commitment to quality and sustainability helps create a brighter future for all.
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section class="testimonial-section">
+        <h2>What Our Clients Say</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"Best Brightness' eco-friendly cleaners have made a huge difference in our home. We love the fresh, clean feel without any harsh chemicals!"</p>
+                        <strong>- Jane Doe</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"The advanced formulas work wonders on tough stains. My kitchen has never been cleaner. Highly recommend their products!"</p>
+                        <strong>- John Smith</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"Great customer service and amazing products. Best Brightness' cleaning solutions have transformed our office cleanliness standards."</p>
+                        <strong>- Emily Johnson</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Social Media Links -->
+    <section class="social-media">
+        <a href="https://facebook.com" target="_blank"><i class="fa fa-facebook"></i></a>
+        <a href="https://twitter.com" target="_blank"><i class="fa fa-twitter"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="fa fa-instagram"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fa fa-linkedin"></i></a>
+    </section>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgS9F" crossorigin="anonymous"></script>
+</body>
+</html>

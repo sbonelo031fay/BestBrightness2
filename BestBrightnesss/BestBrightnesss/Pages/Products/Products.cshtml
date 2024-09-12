@@ -1,0 +1,123 @@
+﻿@page
+@model BestBrightnesss.Pages.Products.ProductsModel
+@{
+    ViewData["Title"] = "All Products";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, red 50%, black 50%);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width:100%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 90%; /* Adjust as needed */
+            width: 90%; /* Adjust as needed */
+            max-width: 1200px;
+            margin: auto;
+            padding-top:50rem;
+        }
+
+        .product-container, .info-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .product-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+            .product-container h2 {
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 2rem;
+            }
+
+        .product-card {
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .product-card h4 {
+                margin: 0;
+                font-size: 1.5rem;
+            }
+
+            .product-card p {
+                margin: 5px 0;
+            }
+
+        .checkbox {
+            margin-right: 10px;
+        }
+
+        .quantity-input {
+            width: 100px;
+            margin-top: 10px;
+        }
+
+        .info-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: #d9534f;
+            border-color: #d9534f;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="container">
+            <div class="product-container">
+                <h2>@ViewData["Title"]</h2>
+                <form method="post" action="/Sales/Create">
+                    @foreach (var product in Model.Invetory)
+                    {
+                        <div class="product-card">
+                            <input type="checkbox" name="selectedProducts" value="@product.ProductId" class="checkbox" />
+                            <h4>@product.Name</h4>
+                            <p><strong>Price:</strong> @product.Price</p>
+                            <p><strong>Stock Level:</strong> @product.StockLevel</p>
+                            <input type="number" name="quantities[@product.ProductId]" min="1" class="form-control quantity-input" placeholder="Quantity" />
+                        </div>
+                    }
+                    <button type="submit" class="btn btn-primary">Record Sale</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+﻿@page
+@model BestBrightnesss.Pages.Sales.SalesModel
+@{
+    ViewData["Title"] = "Record Sale";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, red 50%, black 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        .register-container {
+            
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            width: 100%;
+            color: #333;
+            margin-top: 50px;
+        }
+
+        .card {
+            color: #000000;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding:30px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        .btn-primary {
+            background-color: #d9534f;
+            border-color: #d9534f;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #4c5fd7;
+            color: white;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .total-line {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        form{
+            padding:40px;
+        }
+
+        .scrollable-container {
+            max-height: 300px; /* Adjust this value to fit your design */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2 class="text-center p-md-3">@ViewData["Title"]</h2>
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+        <form method="post" class="d-flex col-md-12 justify-content-center align-items-md-center gap-md-4">
+            <div class="card">
+                <h3>Products and Quantities</h3>
+                <div class="form-group scrollable-container">
+                @for (int i = 0; i < Model.Inventory.Count; i++)
+                {
+                    var product = Model.Inventory[i];
+                    <div class="form-group">
+                        <input type="checkbox" id="product-@i" data-price="@product.Price" />
+                        <label for="product-@i">@product.ProductName</label>
+                        <input type="hidden" id="productId-@i" value="@product.ProductId" />
+                        <input type="hidden" id="productName-@i" value="@product.ProductName" />
+                        <input type="number" name="Sale.Products[@i].Quantity" min="1" placeholder="Quantity" class="form-control quantity-input" />
+                    </div>
+                }
+                </div>
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <button type="button" class="btn btn-primary" onclick="addToCart()">Add to Cart</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price (ZAR)</th>
+                            <th>Total (ZAR)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items">
+                    </tbody>
+                </table>
+                <div class="total-line">
+                    Total: <span id="total-amount">R0.00</span>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="payment-amount" class="form-control" placeholder="Enter payment amount" />
+                </div>
+                <div class="total-line">
+                    Change: <span id="change-amount">R0.00</span>
+                </div>
+                <div class="col-md-12 d-flex justify-content-center align-items-center gap-md-5">
+                    <button type="button" class="btn btn-primary" onclick="calculateChange()">Calculate Change</button>
+                    <button type="submit" class="btn btn-primary">Complete Sale</button>
+                </div>
+            </div>
+            <div id="hidden-cart-items"></div>
+        </form>
+    </div>
+    <script>
+        function addToCart() {
+            var cartItems = document.getElementById('cart-items');
+            var hiddenCartItems = document.getElementById('hidden-cart-items');
+            cartItems.innerHTML = '';
+            hiddenCartItems.innerHTML = ''; // Clear existing hidden inputs
+
+            var products = document.querySelectorAll('[id^="product-"]');
+            var total = 0;
+
+            products.forEach((product, index) => {
+                if (product.checked) {
+                    var quantityInput = document.querySelector(`input[name="Sale.Products[${index}].Quantity"]`);
+                    var quantity = parseInt(quantityInput.value) || 0;
+                    var productName = document.getElementById(`productName-${index}`).value;
+                    var productId = document.getElementById(`productId-${index}`).value;
+                    var price = parseFloat(product.dataset.price);
+                    var subtotal = quantity * price;
+
+                    var row = cartItems.insertRow();
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+                    var cell5 = row.insertCell(4);
+                    cell1.textContent = productName;
+                    cell2.textContent = quantity;
+                    cell3.textContent = `R${price.toFixed(2)}`;
+                    cell4.textContent = `R${subtotal.toFixed(2)}`;
+                    cell5.innerHTML = `<button type="button" class="remove-btn" onclick="removeFromCart(this)">Remove</button>`;
+
+                    total += subtotal;
+
+                    var hiddenIndex = hiddenCartItems.children.length;
+
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `Sale.Products[${hiddenIndex}].ProductId`;
+                    hiddenInput.value = productId;
+                    hiddenCartItems.appendChild(hiddenInput);
+
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `Sale.Products[${hiddenIndex}].ProductName`;
+                    hiddenInput.value = productName;
+                    hiddenCartItems.appendChild(hiddenInput);
+
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `Sale.Products[${hiddenIndex}].Price`;
+                    hiddenInput.value = price.toFixed(2);
+                    hiddenCartItems.appendChild(hiddenInput);
+
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `Sale.Products[${hiddenIndex}].Quantity`;
+                    hiddenInput.value = quantity;
+                    hiddenCartItems.appendChild(hiddenInput);
+                }
+            });
+
+            document.getElementById('total-amount').innerText = `R${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateTotal();
+            updateHiddenCartItems();
+        }
+
+        function updateTotal() {
+            var cartTable = document.getElementById('cart-items');
+            var total = 0;
+            Array.from(cartTable.rows).forEach(row => {
+                total += parseFloat(row.cells[3].innerText.replace('R', ''));
+            });
+            document.getElementById('total-amount').innerText = `R${total.toFixed(2)}`;
+        }
+
+        function updateHiddenCartItems() {
+            var cartItems = document.getElementById('cart-items').rows;
+            var hiddenCartItems = document.getElementById('hidden-cart-items');
+            hiddenCartItems.innerHTML = ''; // Clear existing hidden inputs
+
+            Array.from(cartItems).forEach((row, index) => {
+                var quantity = parseInt(row.cells[1].textContent);
+                var productName = row.cells[0].textContent;
+                var price = parseFloat(row.cells[2].textContent.replace('R', ''));
+                var productId = row.cells[0].dataset.productId; // Ensure product ID is stored in a data attribute
+
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `Sale.Products[${index}].ProductId`;
+                hiddenInput.value = productId;
+                hiddenCartItems.appendChild(hiddenInput);
+
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `Sale.Products[${index}].ProductName`;
+                hiddenInput.value = productName;
+                hiddenCartItems.appendChild(hiddenInput);
+
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `Sale.Products[${index}].Price`;
+                hiddenInput.value = price.toFixed(2);
+                hiddenCartItems.appendChild(hiddenInput);
+
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `Sale.Products[${index}].Quantity`;
+                hiddenInput.value = quantity;
+                hiddenCartItems.appendChild(hiddenInput);
+
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `Sale.IsSelected[${index}].IsSelected`;
+                hiddenInput.value = 'true';
+                hiddenCartItems.appendChild(hiddenInput);
+            });
+        }
+
+        function calculateChange() {
+            var total = parseFloat(document.getElementById('total-amount').innerText.substring(1)); // Removing the 'R'
+            var payment = parseFloat(document.getElementById('payment-amount').value);
+            var change = payment - total;
+            document.getElementById('change-amount').innerText = 'R' + change.toFixed(2);
+        }
+    </script>
+</body>
+</html>
